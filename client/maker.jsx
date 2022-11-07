@@ -8,6 +8,7 @@ const handleDomo = (e) => {
     const age = e.target.querySelector('#domoAge').value;
     const strength = e.target.querySelector('#domoStrength').value;
     const _csrf = e.target.querySelector('#_csrf').value;
+    console.log(_csrf);
 
     if (!name || !age) {
         helper.handleError('All fields are required!');
@@ -18,6 +19,19 @@ const handleDomo = (e) => {
 
     return false;
 };
+
+const deleteDomo = (e) => {
+
+    e.preventDefault();
+    helper.hideError();
+
+    const _csrf = document.querySelector('#_csrf').value;
+    const _id = e.target.querySelector('#_id').value;
+
+    console.log(_csrf);
+
+    helper.sendPost(e.target.action, {_id, _csrf}, loadDomosFromServer);
+}
 
 const DomoForm = (props) => {
     return ( 
@@ -59,6 +73,17 @@ const DomoList = (props) => {
                 <h3 className='domoName'>Name: {domo.name} </h3>
                 <h3 className='domoAge'>Age: {domo.age} </h3>
                 <h3 className='domoStrength'>Strength: {domo.strength} </h3>
+
+                <form 
+                    action="/delete"
+                    name="deleteButton"
+                    method='POST'
+                    onSubmit={deleteDomo}
+                >
+                    <input className="makeDomoSubmit" type="submit" value="Delete" />
+                    <input type="hidden" id="_csrf" name="_csrf" value={props.csrf} />
+                    <input type="hidden" id="_id" name='_id' value={domo._id} />
+                </form>
             </div>
         );
     });
@@ -89,7 +114,7 @@ const init = async () => {
     );
 
     ReactDOM.render(
-        <DomoList domos={[]} />,
+        <DomoList domos={[]} csrf={data.csrfToken} />,
         document.getElementById('domos')
     );
 

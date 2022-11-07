@@ -44,8 +44,20 @@ const getDomos = (req, res) => {
   });
 };
 
+const deleteDomo = async (req, res) => {
+  try {
+    await Domo.deleteOne({ _id: req.body._id });
+    console.log('DOMO DELETED');
+    return res.status(200).json({ _id: req.body._id });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: 'An error has occured!' });
+  }
+};
+
 module.exports = {
   makerPage,
   makeDomo,
   getDomos,
+  deleteDomo,
 };
